@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package flowedge;
+
+option go_package = "./;flowedge";
+
+service FlowEdgeService {
+    rpc Register (RegisterInfoRequest) returns (RegisterResponse);
+    rpc Heartbeat (HeartbeatRequest) returns (HeartbeatResponse);
+}
+
+message RegisterInfoRequest {
+    string id = 1;
+    string ip = 2;
+    string hostname = 3;
+}
+
+message RegisterResponse {
+    string message = 1;
+}
+
+message HeartbeatRequest {
+    string id = 1;
+}
+
+message HeartbeatResponse {
+    string message = 1;
+}
