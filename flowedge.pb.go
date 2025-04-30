@@ -213,6 +213,118 @@ func (x *HeartbeatResponse) GetMessage() string {
 	return ""
 }
 
+type CommandRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Command       string                 `protobuf:"bytes,2,opt,name=command,proto3" json:"command,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CommandRequest) Reset() {
+	*x = CommandRequest{}
+	mi := &file_flowedge_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CommandRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CommandRequest) ProtoMessage() {}
+
+func (x *CommandRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_flowedge_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CommandRequest.ProtoReflect.Descriptor instead.
+func (*CommandRequest) Descriptor() ([]byte, []int) {
+	return file_flowedge_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *CommandRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *CommandRequest) GetCommand() string {
+	if x != nil {
+		return x.Command
+	}
+	return ""
+}
+
+type CommandResult struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Output        string                 `protobuf:"bytes,2,opt,name=output,proto3" json:"output,omitempty"`
+	Status        string                 `protobuf:"bytes,3,opt,name=status,proto3" json:"status,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CommandResult) Reset() {
+	*x = CommandResult{}
+	mi := &file_flowedge_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CommandResult) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CommandResult) ProtoMessage() {}
+
+func (x *CommandResult) ProtoReflect() protoreflect.Message {
+	mi := &file_flowedge_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CommandResult.ProtoReflect.Descriptor instead.
+func (*CommandResult) Descriptor() ([]byte, []int) {
+	return file_flowedge_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *CommandResult) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *CommandResult) GetOutput() string {
+	if x != nil {
+		return x.Output
+	}
+	return ""
+}
+
+func (x *CommandResult) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
 var File_flowedge_proto protoreflect.FileDescriptor
 
 const file_flowedge_proto_rawDesc = "" +
@@ -227,10 +339,18 @@ const file_flowedge_proto_rawDesc = "" +
 	"\x10HeartbeatRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"-\n" +
 	"\x11HeartbeatResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage2\x9e\x01\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\":\n" +
+	"\x0eCommandRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x18\n" +
+	"\acommand\x18\x02 \x01(\tR\acommand\"O\n" +
+	"\rCommandResult\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
+	"\x06output\x18\x02 \x01(\tR\x06output\x12\x16\n" +
+	"\x06status\x18\x03 \x01(\tR\x06status2\xe6\x01\n" +
 	"\x0fFlowEdgeService\x12E\n" +
 	"\bRegister\x12\x1d.flowedge.RegisterInfoRequest\x1a\x1a.flowedge.RegisterResponse\x12D\n" +
-	"\tHeartbeat\x12\x1a.flowedge.HeartbeatRequest\x1a\x1b.flowedge.HeartbeatResponseB\rZ\v./;flowedgeb\x06proto3"
+	"\tHeartbeat\x12\x1a.flowedge.HeartbeatRequest\x1a\x1b.flowedge.HeartbeatResponse\x12F\n" +
+	"\rCommandStream\x12\x18.flowedge.CommandRequest\x1a\x17.flowedge.CommandResult(\x010\x01B\rZ\v./;flowedgeb\x06proto3"
 
 var (
 	file_flowedge_proto_rawDescOnce sync.Once
@@ -244,20 +364,24 @@ func file_flowedge_proto_rawDescGZIP() []byte {
 	return file_flowedge_proto_rawDescData
 }
 
-var file_flowedge_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_flowedge_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_flowedge_proto_goTypes = []any{
 	(*RegisterInfoRequest)(nil), // 0: flowedge.RegisterInfoRequest
 	(*RegisterResponse)(nil),    // 1: flowedge.RegisterResponse
 	(*HeartbeatRequest)(nil),    // 2: flowedge.HeartbeatRequest
 	(*HeartbeatResponse)(nil),   // 3: flowedge.HeartbeatResponse
+	(*CommandRequest)(nil),      // 4: flowedge.CommandRequest
+	(*CommandResult)(nil),       // 5: flowedge.CommandResult
 }
 var file_flowedge_proto_depIdxs = []int32{
 	0, // 0: flowedge.FlowEdgeService.Register:input_type -> flowedge.RegisterInfoRequest
 	2, // 1: flowedge.FlowEdgeService.Heartbeat:input_type -> flowedge.HeartbeatRequest
-	1, // 2: flowedge.FlowEdgeService.Register:output_type -> flowedge.RegisterResponse
-	3, // 3: flowedge.FlowEdgeService.Heartbeat:output_type -> flowedge.HeartbeatResponse
-	2, // [2:4] is the sub-list for method output_type
-	0, // [0:2] is the sub-list for method input_type
+	4, // 2: flowedge.FlowEdgeService.CommandStream:input_type -> flowedge.CommandRequest
+	1, // 3: flowedge.FlowEdgeService.Register:output_type -> flowedge.RegisterResponse
+	3, // 4: flowedge.FlowEdgeService.Heartbeat:output_type -> flowedge.HeartbeatResponse
+	5, // 5: flowedge.FlowEdgeService.CommandStream:output_type -> flowedge.CommandResult
+	3, // [3:6] is the sub-list for method output_type
+	0, // [0:3] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -274,7 +398,7 @@ func file_flowedge_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_flowedge_proto_rawDesc), len(file_flowedge_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

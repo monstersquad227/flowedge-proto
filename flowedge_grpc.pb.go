@@ -19,8 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	FlowEdgeService_Register_FullMethodName  = "/flowedge.FlowEdgeService/Register"
-	FlowEdgeService_Heartbeat_FullMethodName = "/flowedge.FlowEdgeService/Heartbeat"
+	FlowEdgeService_Register_FullMethodName      = "/flowedge.FlowEdgeService/Register"
+	FlowEdgeService_Heartbeat_FullMethodName     = "/flowedge.FlowEdgeService/Heartbeat"
+	FlowEdgeService_CommandStream_FullMethodName = "/flowedge.FlowEdgeService/CommandStream"
 )
 
 // FlowEdgeServiceClient is the client API for FlowEdgeService service.
@@ -29,6 +30,7 @@ const (
 type FlowEdgeServiceClient interface {
 	Register(ctx context.Context, in *RegisterInfoRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
 	Heartbeat(ctx context.Context, in *HeartbeatRequest, opts ...grpc.CallOption) (*HeartbeatResponse, error)
+	CommandStream(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[CommandRequest, CommandResult], error)
 }
 
 type flowEdgeServiceClient struct {
@@ -59,12 +61,26 @@ func (c *flowEdgeServiceClient) Heartbeat(ctx context.Context, in *HeartbeatRequ
 	return out, nil
 }
 
+func (c *flowEdgeServiceClient) CommandStream(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[CommandRequest, CommandResult], error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	stream, err := c.cc.NewStream(ctx, &FlowEdgeService_ServiceDesc.Streams[0], FlowEdgeService_CommandStream_FullMethodName, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &grpc.GenericClientStream[CommandRequest, CommandResult]{ClientStream: stream}
+	return x, nil
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type FlowEdgeService_CommandStreamClient = grpc.BidiStreamingClient[CommandRequest, CommandResult]
+
 // FlowEdgeServiceServer is the server API for FlowEdgeService service.
 // All implementations must embed UnimplementedFlowEdgeServiceServer
 // for forward compatibility.
 type FlowEdgeServiceServer interface {
 	Register(context.Context, *RegisterInfoRequest) (*RegisterResponse, error)
 	Heartbeat(context.Context, *HeartbeatRequest) (*HeartbeatResponse, error)
+	CommandStream(grpc.BidiStreamingServer[CommandRequest, CommandResult]) error
 	mustEmbedUnimplementedFlowEdgeServiceServer()
 }
 
@@ -80,6 +96,9 @@ func (UnimplementedFlowEdgeServiceServer) Register(context.Context, *RegisterInf
 }
 func (UnimplementedFlowEdgeServiceServer) Heartbeat(context.Context, *HeartbeatRequest) (*HeartbeatResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Heartbeat not implemented")
+}
+func (UnimplementedFlowEdgeServiceServer) CommandStream(grpc.BidiStreamingServer[CommandRequest, CommandResult]) error {
+	return status.Errorf(codes.Unimplemented, "method CommandStream not implemented")
 }
 func (UnimplementedFlowEdgeServiceServer) mustEmbedUnimplementedFlowEdgeServiceServer() {}
 func (UnimplementedFlowEdgeServiceServer) testEmbeddedByValue()                         {}
@@ -138,6 +157,13 @@ func _FlowEdgeService_Heartbeat_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _FlowEdgeService_CommandStream_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(FlowEdgeServiceServer).CommandStream(&grpc.GenericServerStream[CommandRequest, CommandResult]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type FlowEdgeService_CommandStreamServer = grpc.BidiStreamingServer[CommandRequest, CommandResult]
+
 // FlowEdgeService_ServiceDesc is the grpc.ServiceDesc for FlowEdgeService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -154,6 +180,13 @@ var FlowEdgeService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _FlowEdgeService_Heartbeat_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "CommandStream",
+			Handler:       _FlowEdgeService_CommandStream_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
+		},
+	},
 	Metadata: "flowedge.proto",
 }
