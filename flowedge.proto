@@ -7,7 +7,7 @@ option go_package = "./;flowedge";
 service FlowEdgeService {
     rpc Register (RegisterInfoRequest) returns (RegisterResponse);
     rpc Heartbeat (HeartbeatRequest) returns (HeartbeatResponse);
-    rpc CommandStream(stream CommandRequest) returns (stream CommandResult);
+    rpc ExecuteCommand(CommandRequest) returns (CommandResponse);
 }
 
 message RegisterInfoRequest {
@@ -33,7 +33,7 @@ message CommandRequest {
     string command = 2;
 }
 
-message CommandResult {
+message CommandResponse {
     string id = 1;
     string output = 2;
     string status = 3;

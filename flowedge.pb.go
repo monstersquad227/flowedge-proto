@@ -265,7 +265,7 @@ func (x *CommandRequest) GetCommand() string {
 	return ""
 }
 
-type CommandResult struct {
+type CommandResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Output        string                 `protobuf:"bytes,2,opt,name=output,proto3" json:"output,omitempty"`
@@ -274,20 +274,20 @@ type CommandResult struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CommandResult) Reset() {
-	*x = CommandResult{}
+func (x *CommandResponse) Reset() {
+	*x = CommandResponse{}
 	mi := &file_flowedge_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CommandResult) String() string {
+func (x *CommandResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CommandResult) ProtoMessage() {}
+func (*CommandResponse) ProtoMessage() {}
 
-func (x *CommandResult) ProtoReflect() protoreflect.Message {
+func (x *CommandResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_flowedge_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -299,26 +299,26 @@ func (x *CommandResult) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CommandResult.ProtoReflect.Descriptor instead.
-func (*CommandResult) Descriptor() ([]byte, []int) {
+// Deprecated: Use CommandResponse.ProtoReflect.Descriptor instead.
+func (*CommandResponse) Descriptor() ([]byte, []int) {
 	return file_flowedge_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *CommandResult) GetId() string {
+func (x *CommandResponse) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *CommandResult) GetOutput() string {
+func (x *CommandResponse) GetOutput() string {
 	if x != nil {
 		return x.Output
 	}
 	return ""
 }
 
-func (x *CommandResult) GetStatus() string {
+func (x *CommandResponse) GetStatus() string {
 	if x != nil {
 		return x.Status
 	}
@@ -342,15 +342,15 @@ const file_flowedge_proto_rawDesc = "" +
 	"\amessage\x18\x01 \x01(\tR\amessage\":\n" +
 	"\x0eCommandRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x18\n" +
-	"\acommand\x18\x02 \x01(\tR\acommand\"O\n" +
-	"\rCommandResult\x12\x0e\n" +
+	"\acommand\x18\x02 \x01(\tR\acommand\"Q\n" +
+	"\x0fCommandResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
 	"\x06output\x18\x02 \x01(\tR\x06output\x12\x16\n" +
-	"\x06status\x18\x03 \x01(\tR\x06status2\xe6\x01\n" +
+	"\x06status\x18\x03 \x01(\tR\x06status2\xe5\x01\n" +
 	"\x0fFlowEdgeService\x12E\n" +
 	"\bRegister\x12\x1d.flowedge.RegisterInfoRequest\x1a\x1a.flowedge.RegisterResponse\x12D\n" +
-	"\tHeartbeat\x12\x1a.flowedge.HeartbeatRequest\x1a\x1b.flowedge.HeartbeatResponse\x12F\n" +
-	"\rCommandStream\x12\x18.flowedge.CommandRequest\x1a\x17.flowedge.CommandResult(\x010\x01B\rZ\v./;flowedgeb\x06proto3"
+	"\tHeartbeat\x12\x1a.flowedge.HeartbeatRequest\x1a\x1b.flowedge.HeartbeatResponse\x12E\n" +
+	"\x0eExecuteCommand\x12\x18.flowedge.CommandRequest\x1a\x19.flowedge.CommandResponseB\rZ\v./;flowedgeb\x06proto3"
 
 var (
 	file_flowedge_proto_rawDescOnce sync.Once
@@ -371,15 +371,15 @@ var file_flowedge_proto_goTypes = []any{
 	(*HeartbeatRequest)(nil),    // 2: flowedge.HeartbeatRequest
 	(*HeartbeatResponse)(nil),   // 3: flowedge.HeartbeatResponse
 	(*CommandRequest)(nil),      // 4: flowedge.CommandRequest
-	(*CommandResult)(nil),       // 5: flowedge.CommandResult
+	(*CommandResponse)(nil),     // 5: flowedge.CommandResponse
 }
 var file_flowedge_proto_depIdxs = []int32{
 	0, // 0: flowedge.FlowEdgeService.Register:input_type -> flowedge.RegisterInfoRequest
 	2, // 1: flowedge.FlowEdgeService.Heartbeat:input_type -> flowedge.HeartbeatRequest
-	4, // 2: flowedge.FlowEdgeService.CommandStream:input_type -> flowedge.CommandRequest
+	4, // 2: flowedge.FlowEdgeService.ExecuteCommand:input_type -> flowedge.CommandRequest
 	1, // 3: flowedge.FlowEdgeService.Register:output_type -> flowedge.RegisterResponse
 	3, // 4: flowedge.FlowEdgeService.Heartbeat:output_type -> flowedge.HeartbeatResponse
-	5, // 5: flowedge.FlowEdgeService.CommandStream:output_type -> flowedge.CommandResult
+	5, // 5: flowedge.FlowEdgeService.ExecuteCommand:output_type -> flowedge.CommandResponse
 	3, // [3:6] is the sub-list for method output_type
 	0, // [0:3] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
