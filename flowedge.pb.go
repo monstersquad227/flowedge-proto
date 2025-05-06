@@ -21,29 +21,89 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type RegisterInfoRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Ip            string                 `protobuf:"bytes,2,opt,name=ip,proto3" json:"ip,omitempty"`
-	Hostname      string                 `protobuf:"bytes,3,opt,name=hostname,proto3" json:"hostname,omitempty"`
+type MessageType int32
+
+const (
+	MessageType_UNKNOWN          MessageType = 0
+	MessageType_REGISTER         MessageType = 1
+	MessageType_HEARTBEAT        MessageType = 2
+	MessageType_EXECUTE_REQUEST  MessageType = 3
+	MessageType_EXECUTE_RESPONSE MessageType = 4
+)
+
+// Enum value maps for MessageType.
+var (
+	MessageType_name = map[int32]string{
+		0: "UNKNOWN",
+		1: "REGISTER",
+		2: "HEARTBEAT",
+		3: "EXECUTE_REQUEST",
+		4: "EXECUTE_RESPONSE",
+	}
+	MessageType_value = map[string]int32{
+		"UNKNOWN":          0,
+		"REGISTER":         1,
+		"HEARTBEAT":        2,
+		"EXECUTE_REQUEST":  3,
+		"EXECUTE_RESPONSE": 4,
+	}
+)
+
+func (x MessageType) Enum() *MessageType {
+	p := new(MessageType)
+	*p = x
+	return p
+}
+
+func (x MessageType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (MessageType) Descriptor() protoreflect.EnumDescriptor {
+	return file_flowedge_proto_enumTypes[0].Descriptor()
+}
+
+func (MessageType) Type() protoreflect.EnumType {
+	return &file_flowedge_proto_enumTypes[0]
+}
+
+func (x MessageType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use MessageType.Descriptor instead.
+func (MessageType) EnumDescriptor() ([]byte, []int) {
+	return file_flowedge_proto_rawDescGZIP(), []int{0}
+}
+
+type StreamMessage struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	Type  MessageType            `protobuf:"varint,1,opt,name=type,proto3,enum=flowedge.MessageType" json:"type,omitempty"`
+	// Types that are valid to be assigned to Body:
+	//
+	//	*StreamMessage_Register
+	//	*StreamMessage_Heartbeat
+	//	*StreamMessage_ExecuteRequest
+	//	*StreamMessage_ExecuteResponse
+	Body          isStreamMessage_Body `protobuf_oneof:"body"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *RegisterInfoRequest) Reset() {
-	*x = RegisterInfoRequest{}
+func (x *StreamMessage) Reset() {
+	*x = StreamMessage{}
 	mi := &file_flowedge_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *RegisterInfoRequest) String() string {
+func (x *StreamMessage) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*RegisterInfoRequest) ProtoMessage() {}
+func (*StreamMessage) ProtoMessage() {}
 
-func (x *RegisterInfoRequest) ProtoReflect() protoreflect.Message {
+func (x *StreamMessage) ProtoReflect() protoreflect.Message {
 	mi := &file_flowedge_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -55,97 +115,171 @@ func (x *RegisterInfoRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use RegisterInfoRequest.ProtoReflect.Descriptor instead.
-func (*RegisterInfoRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use StreamMessage.ProtoReflect.Descriptor instead.
+func (*StreamMessage) Descriptor() ([]byte, []int) {
 	return file_flowedge_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *RegisterInfoRequest) GetId() string {
+func (x *StreamMessage) GetType() MessageType {
 	if x != nil {
-		return x.Id
+		return x.Type
+	}
+	return MessageType_UNKNOWN
+}
+
+func (x *StreamMessage) GetBody() isStreamMessage_Body {
+	if x != nil {
+		return x.Body
+	}
+	return nil
+}
+
+func (x *StreamMessage) GetRegister() *RegisterMessage {
+	if x != nil {
+		if x, ok := x.Body.(*StreamMessage_Register); ok {
+			return x.Register
+		}
+	}
+	return nil
+}
+
+func (x *StreamMessage) GetHeartbeat() *HeartbeatMessage {
+	if x != nil {
+		if x, ok := x.Body.(*StreamMessage_Heartbeat); ok {
+			return x.Heartbeat
+		}
+	}
+	return nil
+}
+
+func (x *StreamMessage) GetExecuteRequest() *ExecuteRequest {
+	if x != nil {
+		if x, ok := x.Body.(*StreamMessage_ExecuteRequest); ok {
+			return x.ExecuteRequest
+		}
+	}
+	return nil
+}
+
+func (x *StreamMessage) GetExecuteResponse() *ExecuteResponse {
+	if x != nil {
+		if x, ok := x.Body.(*StreamMessage_ExecuteResponse); ok {
+			return x.ExecuteResponse
+		}
+	}
+	return nil
+}
+
+type isStreamMessage_Body interface {
+	isStreamMessage_Body()
+}
+
+type StreamMessage_Register struct {
+	Register *RegisterMessage `protobuf:"bytes,2,opt,name=register,proto3,oneof"`
+}
+
+type StreamMessage_Heartbeat struct {
+	Heartbeat *HeartbeatMessage `protobuf:"bytes,3,opt,name=heartbeat,proto3,oneof"`
+}
+
+type StreamMessage_ExecuteRequest struct {
+	ExecuteRequest *ExecuteRequest `protobuf:"bytes,4,opt,name=execute_request,json=executeRequest,proto3,oneof"`
+}
+
+type StreamMessage_ExecuteResponse struct {
+	ExecuteResponse *ExecuteResponse `protobuf:"bytes,5,opt,name=execute_response,json=executeResponse,proto3,oneof"`
+}
+
+func (*StreamMessage_Register) isStreamMessage_Body() {}
+
+func (*StreamMessage_Heartbeat) isStreamMessage_Body() {}
+
+func (*StreamMessage_ExecuteRequest) isStreamMessage_Body() {}
+
+func (*StreamMessage_ExecuteResponse) isStreamMessage_Body() {}
+
+type RegisterMessage struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AgentId       string                 `protobuf:"bytes,1,opt,name=agent_id,json=agentId,proto3" json:"agent_id,omitempty"`
+	Hostname      string                 `protobuf:"bytes,2,opt,name=hostname,proto3" json:"hostname,omitempty"`
+	Version       string                 `protobuf:"bytes,3,opt,name=version,proto3" json:"version,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RegisterMessage) Reset() {
+	*x = RegisterMessage{}
+	mi := &file_flowedge_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RegisterMessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RegisterMessage) ProtoMessage() {}
+
+func (x *RegisterMessage) ProtoReflect() protoreflect.Message {
+	mi := &file_flowedge_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RegisterMessage.ProtoReflect.Descriptor instead.
+func (*RegisterMessage) Descriptor() ([]byte, []int) {
+	return file_flowedge_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *RegisterMessage) GetAgentId() string {
+	if x != nil {
+		return x.AgentId
 	}
 	return ""
 }
 
-func (x *RegisterInfoRequest) GetIp() string {
-	if x != nil {
-		return x.Ip
-	}
-	return ""
-}
-
-func (x *RegisterInfoRequest) GetHostname() string {
+func (x *RegisterMessage) GetHostname() string {
 	if x != nil {
 		return x.Hostname
 	}
 	return ""
 }
 
-type RegisterResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *RegisterResponse) Reset() {
-	*x = RegisterResponse{}
-	mi := &file_flowedge_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *RegisterResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*RegisterResponse) ProtoMessage() {}
-
-func (x *RegisterResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_flowedge_proto_msgTypes[1]
+func (x *RegisterMessage) GetVersion() string {
 	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use RegisterResponse.ProtoReflect.Descriptor instead.
-func (*RegisterResponse) Descriptor() ([]byte, []int) {
-	return file_flowedge_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *RegisterResponse) GetMessage() string {
-	if x != nil {
-		return x.Message
+		return x.Version
 	}
 	return ""
 }
 
-type HeartbeatRequest struct {
+type HeartbeatMessage struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	AgentId       string                 `protobuf:"bytes,1,opt,name=agent_id,json=agentId,proto3" json:"agent_id,omitempty"`
+	Timestamp     int64                  `protobuf:"varint,2,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *HeartbeatRequest) Reset() {
-	*x = HeartbeatRequest{}
+func (x *HeartbeatMessage) Reset() {
+	*x = HeartbeatMessage{}
 	mi := &file_flowedge_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *HeartbeatRequest) String() string {
+func (x *HeartbeatMessage) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*HeartbeatRequest) ProtoMessage() {}
+func (*HeartbeatMessage) ProtoMessage() {}
 
-func (x *HeartbeatRequest) ProtoReflect() protoreflect.Message {
+func (x *HeartbeatMessage) ProtoReflect() protoreflect.Message {
 	mi := &file_flowedge_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -157,39 +291,47 @@ func (x *HeartbeatRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use HeartbeatRequest.ProtoReflect.Descriptor instead.
-func (*HeartbeatRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use HeartbeatMessage.ProtoReflect.Descriptor instead.
+func (*HeartbeatMessage) Descriptor() ([]byte, []int) {
 	return file_flowedge_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *HeartbeatRequest) GetId() string {
+func (x *HeartbeatMessage) GetAgentId() string {
 	if x != nil {
-		return x.Id
+		return x.AgentId
 	}
 	return ""
 }
 
-type HeartbeatResponse struct {
+func (x *HeartbeatMessage) GetTimestamp() int64 {
+	if x != nil {
+		return x.Timestamp
+	}
+	return 0
+}
+
+type ExecuteRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	CommandId     string                 `protobuf:"bytes,1,opt,name=command_id,json=commandId,proto3" json:"command_id,omitempty"`
+	ShellCommand  string                 `protobuf:"bytes,2,opt,name=shell_command,json=shellCommand,proto3" json:"shell_command,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *HeartbeatResponse) Reset() {
-	*x = HeartbeatResponse{}
+func (x *ExecuteRequest) Reset() {
+	*x = ExecuteRequest{}
 	mi := &file_flowedge_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *HeartbeatResponse) String() string {
+func (x *ExecuteRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*HeartbeatResponse) ProtoMessage() {}
+func (*ExecuteRequest) ProtoMessage() {}
 
-func (x *HeartbeatResponse) ProtoReflect() protoreflect.Message {
+func (x *ExecuteRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_flowedge_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -201,40 +343,49 @@ func (x *HeartbeatResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use HeartbeatResponse.ProtoReflect.Descriptor instead.
-func (*HeartbeatResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use ExecuteRequest.ProtoReflect.Descriptor instead.
+func (*ExecuteRequest) Descriptor() ([]byte, []int) {
 	return file_flowedge_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *HeartbeatResponse) GetMessage() string {
+func (x *ExecuteRequest) GetCommandId() string {
 	if x != nil {
-		return x.Message
+		return x.CommandId
 	}
 	return ""
 }
 
-type CommandRequest struct {
+func (x *ExecuteRequest) GetShellCommand() string {
+	if x != nil {
+		return x.ShellCommand
+	}
+	return ""
+}
+
+type ExecuteResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Command       string                 `protobuf:"bytes,2,opt,name=command,proto3" json:"command,omitempty"`
+	CommandId     string                 `protobuf:"bytes,1,opt,name=command_id,json=commandId,proto3" json:"command_id,omitempty"`
+	ExitCode      int32                  `protobuf:"varint,2,opt,name=exit_code,json=exitCode,proto3" json:"exit_code,omitempty"`
+	Output        string                 `protobuf:"bytes,3,opt,name=output,proto3" json:"output,omitempty"`
+	Error         string                 `protobuf:"bytes,4,opt,name=error,proto3" json:"error,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CommandRequest) Reset() {
-	*x = CommandRequest{}
+func (x *ExecuteResponse) Reset() {
+	*x = ExecuteResponse{}
 	mi := &file_flowedge_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CommandRequest) String() string {
+func (x *ExecuteResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CommandRequest) ProtoMessage() {}
+func (*ExecuteResponse) ProtoMessage() {}
 
-func (x *CommandRequest) ProtoReflect() protoreflect.Message {
+func (x *ExecuteResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_flowedge_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -246,81 +397,35 @@ func (x *CommandRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CommandRequest.ProtoReflect.Descriptor instead.
-func (*CommandRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use ExecuteResponse.ProtoReflect.Descriptor instead.
+func (*ExecuteResponse) Descriptor() ([]byte, []int) {
 	return file_flowedge_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *CommandRequest) GetId() string {
+func (x *ExecuteResponse) GetCommandId() string {
 	if x != nil {
-		return x.Id
+		return x.CommandId
 	}
 	return ""
 }
 
-func (x *CommandRequest) GetCommand() string {
+func (x *ExecuteResponse) GetExitCode() int32 {
 	if x != nil {
-		return x.Command
+		return x.ExitCode
 	}
-	return ""
+	return 0
 }
 
-type CommandResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Output        string                 `protobuf:"bytes,2,opt,name=output,proto3" json:"output,omitempty"`
-	Status        string                 `protobuf:"bytes,3,opt,name=status,proto3" json:"status,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *CommandResponse) Reset() {
-	*x = CommandResponse{}
-	mi := &file_flowedge_proto_msgTypes[5]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *CommandResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CommandResponse) ProtoMessage() {}
-
-func (x *CommandResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_flowedge_proto_msgTypes[5]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use CommandResponse.ProtoReflect.Descriptor instead.
-func (*CommandResponse) Descriptor() ([]byte, []int) {
-	return file_flowedge_proto_rawDescGZIP(), []int{5}
-}
-
-func (x *CommandResponse) GetId() string {
-	if x != nil {
-		return x.Id
-	}
-	return ""
-}
-
-func (x *CommandResponse) GetOutput() string {
+func (x *ExecuteResponse) GetOutput() string {
 	if x != nil {
 		return x.Output
 	}
 	return ""
 }
 
-func (x *CommandResponse) GetStatus() string {
+func (x *ExecuteResponse) GetError() string {
 	if x != nil {
-		return x.Status
+		return x.Error
 	}
 	return ""
 }
@@ -329,28 +434,39 @@ var File_flowedge_proto protoreflect.FileDescriptor
 
 const file_flowedge_proto_rawDesc = "" +
 	"\n" +
-	"\x0eflowedge.proto\x12\bflowedge\"Q\n" +
-	"\x13RegisterInfoRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x0e\n" +
-	"\x02ip\x18\x02 \x01(\tR\x02ip\x12\x1a\n" +
-	"\bhostname\x18\x03 \x01(\tR\bhostname\",\n" +
-	"\x10RegisterResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage\"\"\n" +
-	"\x10HeartbeatRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"-\n" +
-	"\x11HeartbeatResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage\":\n" +
-	"\x0eCommandRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x18\n" +
-	"\acommand\x18\x02 \x01(\tR\acommand\"Q\n" +
-	"\x0fCommandResponse\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
-	"\x06output\x18\x02 \x01(\tR\x06output\x12\x16\n" +
-	"\x06status\x18\x03 \x01(\tR\x06status2\xe5\x01\n" +
-	"\x0fFlowEdgeService\x12E\n" +
-	"\bRegister\x12\x1d.flowedge.RegisterInfoRequest\x1a\x1a.flowedge.RegisterResponse\x12D\n" +
-	"\tHeartbeat\x12\x1a.flowedge.HeartbeatRequest\x1a\x1b.flowedge.HeartbeatResponse\x12E\n" +
-	"\x0eExecuteCommand\x12\x18.flowedge.CommandRequest\x1a\x19.flowedge.CommandResponseB\rZ\v./;flowedgeb\x06proto3"
+	"\x0eflowedge.proto\x12\bflowedge\"\xc4\x02\n" +
+	"\rStreamMessage\x12)\n" +
+	"\x04type\x18\x01 \x01(\x0e2\x15.flowedge.MessageTypeR\x04type\x127\n" +
+	"\bregister\x18\x02 \x01(\v2\x19.flowedge.RegisterMessageH\x00R\bregister\x12:\n" +
+	"\theartbeat\x18\x03 \x01(\v2\x1a.flowedge.HeartbeatMessageH\x00R\theartbeat\x12C\n" +
+	"\x0fexecute_request\x18\x04 \x01(\v2\x18.flowedge.ExecuteRequestH\x00R\x0eexecuteRequest\x12F\n" +
+	"\x10execute_response\x18\x05 \x01(\v2\x19.flowedge.ExecuteResponseH\x00R\x0fexecuteResponseB\x06\n" +
+	"\x04body\"b\n" +
+	"\x0fRegisterMessage\x12\x19\n" +
+	"\bagent_id\x18\x01 \x01(\tR\aagentId\x12\x1a\n" +
+	"\bhostname\x18\x02 \x01(\tR\bhostname\x12\x18\n" +
+	"\aversion\x18\x03 \x01(\tR\aversion\"K\n" +
+	"\x10HeartbeatMessage\x12\x19\n" +
+	"\bagent_id\x18\x01 \x01(\tR\aagentId\x12\x1c\n" +
+	"\ttimestamp\x18\x02 \x01(\x03R\ttimestamp\"T\n" +
+	"\x0eExecuteRequest\x12\x1d\n" +
+	"\n" +
+	"command_id\x18\x01 \x01(\tR\tcommandId\x12#\n" +
+	"\rshell_command\x18\x02 \x01(\tR\fshellCommand\"{\n" +
+	"\x0fExecuteResponse\x12\x1d\n" +
+	"\n" +
+	"command_id\x18\x01 \x01(\tR\tcommandId\x12\x1b\n" +
+	"\texit_code\x18\x02 \x01(\x05R\bexitCode\x12\x16\n" +
+	"\x06output\x18\x03 \x01(\tR\x06output\x12\x14\n" +
+	"\x05error\x18\x04 \x01(\tR\x05error*b\n" +
+	"\vMessageType\x12\v\n" +
+	"\aUNKNOWN\x10\x00\x12\f\n" +
+	"\bREGISTER\x10\x01\x12\r\n" +
+	"\tHEARTBEAT\x10\x02\x12\x13\n" +
+	"\x0fEXECUTE_REQUEST\x10\x03\x12\x14\n" +
+	"\x10EXECUTE_RESPONSE\x10\x042O\n" +
+	"\bFlowEdge\x12C\n" +
+	"\vCommunicate\x12\x17.flowedge.StreamMessage\x1a\x17.flowedge.StreamMessage(\x010\x01B\rZ\v./;flowedgeb\x06proto3"
 
 var (
 	file_flowedge_proto_rawDescOnce sync.Once
@@ -364,27 +480,29 @@ func file_flowedge_proto_rawDescGZIP() []byte {
 	return file_flowedge_proto_rawDescData
 }
 
-var file_flowedge_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_flowedge_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_flowedge_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_flowedge_proto_goTypes = []any{
-	(*RegisterInfoRequest)(nil), // 0: flowedge.RegisterInfoRequest
-	(*RegisterResponse)(nil),    // 1: flowedge.RegisterResponse
-	(*HeartbeatRequest)(nil),    // 2: flowedge.HeartbeatRequest
-	(*HeartbeatResponse)(nil),   // 3: flowedge.HeartbeatResponse
-	(*CommandRequest)(nil),      // 4: flowedge.CommandRequest
-	(*CommandResponse)(nil),     // 5: flowedge.CommandResponse
+	(MessageType)(0),         // 0: flowedge.MessageType
+	(*StreamMessage)(nil),    // 1: flowedge.StreamMessage
+	(*RegisterMessage)(nil),  // 2: flowedge.RegisterMessage
+	(*HeartbeatMessage)(nil), // 3: flowedge.HeartbeatMessage
+	(*ExecuteRequest)(nil),   // 4: flowedge.ExecuteRequest
+	(*ExecuteResponse)(nil),  // 5: flowedge.ExecuteResponse
 }
 var file_flowedge_proto_depIdxs = []int32{
-	0, // 0: flowedge.FlowEdgeService.Register:input_type -> flowedge.RegisterInfoRequest
-	2, // 1: flowedge.FlowEdgeService.Heartbeat:input_type -> flowedge.HeartbeatRequest
-	4, // 2: flowedge.FlowEdgeService.ExecuteCommand:input_type -> flowedge.CommandRequest
-	1, // 3: flowedge.FlowEdgeService.Register:output_type -> flowedge.RegisterResponse
-	3, // 4: flowedge.FlowEdgeService.Heartbeat:output_type -> flowedge.HeartbeatResponse
-	5, // 5: flowedge.FlowEdgeService.ExecuteCommand:output_type -> flowedge.CommandResponse
-	3, // [3:6] is the sub-list for method output_type
-	0, // [0:3] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	0, // 0: flowedge.StreamMessage.type:type_name -> flowedge.MessageType
+	2, // 1: flowedge.StreamMessage.register:type_name -> flowedge.RegisterMessage
+	3, // 2: flowedge.StreamMessage.heartbeat:type_name -> flowedge.HeartbeatMessage
+	4, // 3: flowedge.StreamMessage.execute_request:type_name -> flowedge.ExecuteRequest
+	5, // 4: flowedge.StreamMessage.execute_response:type_name -> flowedge.ExecuteResponse
+	1, // 5: flowedge.FlowEdge.Communicate:input_type -> flowedge.StreamMessage
+	1, // 6: flowedge.FlowEdge.Communicate:output_type -> flowedge.StreamMessage
+	6, // [6:7] is the sub-list for method output_type
+	5, // [5:6] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_flowedge_proto_init() }
@@ -392,18 +510,25 @@ func file_flowedge_proto_init() {
 	if File_flowedge_proto != nil {
 		return
 	}
+	file_flowedge_proto_msgTypes[0].OneofWrappers = []any{
+		(*StreamMessage_Register)(nil),
+		(*StreamMessage_Heartbeat)(nil),
+		(*StreamMessage_ExecuteRequest)(nil),
+		(*StreamMessage_ExecuteResponse)(nil),
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_flowedge_proto_rawDesc), len(file_flowedge_proto_rawDesc)),
-			NumEnums:      0,
-			NumMessages:   6,
+			NumEnums:      1,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_flowedge_proto_goTypes,
 		DependencyIndexes: file_flowedge_proto_depIdxs,
+		EnumInfos:         file_flowedge_proto_enumTypes,
 		MessageInfos:      file_flowedge_proto_msgTypes,
 	}.Build()
 	File_flowedge_proto = out.File
