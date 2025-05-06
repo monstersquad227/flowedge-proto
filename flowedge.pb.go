@@ -313,7 +313,9 @@ func (x *HeartbeatMessage) GetTimestamp() int64 {
 type ExecuteRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	CommandId     string                 `protobuf:"bytes,1,opt,name=command_id,json=commandId,proto3" json:"command_id,omitempty"`
-	ShellCommand  string                 `protobuf:"bytes,2,opt,name=shell_command,json=shellCommand,proto3" json:"shell_command,omitempty"`
+	Command       string                 `protobuf:"bytes,2,opt,name=command,proto3" json:"command,omitempty"`
+	Image         string                 `protobuf:"bytes,3,opt,name=image,proto3" json:"image,omitempty"`
+	ContainerId   string                 `protobuf:"bytes,4,opt,name=container_id,json=containerId,proto3" json:"container_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -355,9 +357,23 @@ func (x *ExecuteRequest) GetCommandId() string {
 	return ""
 }
 
-func (x *ExecuteRequest) GetShellCommand() string {
+func (x *ExecuteRequest) GetCommand() string {
 	if x != nil {
-		return x.ShellCommand
+		return x.Command
+	}
+	return ""
+}
+
+func (x *ExecuteRequest) GetImage() string {
+	if x != nil {
+		return x.Image
+	}
+	return ""
+}
+
+func (x *ExecuteRequest) GetContainerId() string {
+	if x != nil {
+		return x.ContainerId
 	}
 	return ""
 }
@@ -448,11 +464,13 @@ const file_flowedge_proto_rawDesc = "" +
 	"\aversion\x18\x03 \x01(\tR\aversion\"K\n" +
 	"\x10HeartbeatMessage\x12\x19\n" +
 	"\bagent_id\x18\x01 \x01(\tR\aagentId\x12\x1c\n" +
-	"\ttimestamp\x18\x02 \x01(\x03R\ttimestamp\"T\n" +
+	"\ttimestamp\x18\x02 \x01(\x03R\ttimestamp\"\x82\x01\n" +
 	"\x0eExecuteRequest\x12\x1d\n" +
 	"\n" +
-	"command_id\x18\x01 \x01(\tR\tcommandId\x12#\n" +
-	"\rshell_command\x18\x02 \x01(\tR\fshellCommand\"{\n" +
+	"command_id\x18\x01 \x01(\tR\tcommandId\x12\x18\n" +
+	"\acommand\x18\x02 \x01(\tR\acommand\x12\x14\n" +
+	"\x05image\x18\x03 \x01(\tR\x05image\x12!\n" +
+	"\fcontainer_id\x18\x04 \x01(\tR\vcontainerId\"{\n" +
 	"\x0fExecuteResponse\x12\x1d\n" +
 	"\n" +
 	"command_id\x18\x01 \x01(\tR\tcommandId\x12\x1b\n" +

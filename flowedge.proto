@@ -36,7 +36,9 @@ message HeartbeatMessage {
 
 message ExecuteRequest {
     string command_id = 1;
-    string shell_command = 2;
+    string command = 2;
+    string image = 3;
+    string container_id = 4;
 }
 
 message ExecuteResponse {
